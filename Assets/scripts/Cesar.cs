@@ -2,10 +2,12 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class Cesar : MonoBehaviour {
+public class Cesar : MonoBehaviour
+{
 
 	public float strength = 20f;
 	public Collider2D loseCollider;
+	//Horizontal speed;
 	public float moveSpeed = 6f;
 	public float maxLeft = -3.163f;
 	public float maxRight = 3.163f;
@@ -15,32 +17,49 @@ public class Cesar : MonoBehaviour {
 	private Vector2 prevLocation;
 
 	// Use this for initialization
-	void Start () {
+	public float maxSpeed;
+	public float minSpeed;
+	public float currentSpeed;
+	private bool started;
+
+	private Vector2 currentVelocity;
+	private Rigidbody2D rgbd;
+
+	void Start ()
+	{
+		rgbd = GetComponent<Rigidbody2D>();
 		prevLocation = transform.position;
 		score = 0;
+		started = false;
 	}
+
+	
 	
 	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown(KeyCode.Space) == true && transform.GetComponent<Rigidbody2D> ().isKinematic) {
+	void Update ()
+	{
+		if (Input.GetKeyDown (KeyCode.Space) == true && transform.GetComponent<Rigidbody2D> ().isKinematic) {
 			transform.GetComponent<Rigidbody2D> ().isKinematic = false;
 			score = 0;
 			levelManager.GetComponent<LevelManager> ().gameBegin ();
-			this.boost (strength);
+			this.boost (1f);
 			Debug.Log ("click");
+			started = true;
 		}
 		if (Input.GetKey ("q") && transform.position.x > maxLeft) {
 			transform.Translate (Vector2.left * moveSpeed * Time.deltaTime);
 		}
 
-		if (Input.GetKey ("d") && transform.position.x <maxRight) {
+		if (Input.GetKey ("d") && transform.position.x < maxRight) {
 			transform.Translate (Vector2.right * moveSpeed * Time.deltaTime);
 		}
+
 	}
 
-	void OnTriggerEnter2D(Collider2D collider){
-		if (collider == loseCollider || collider.transform.tag.CompareTo("Dislike") == 0) {
-			score = ((int)transform.position.y) * 10;
+	void OnTriggerEnter2D (Collider2D collider)
+	{
+		if (collider == loseCollider || collider.transform.tag.Equals ("Dislike")) {
+			score = ((int)transform.position.y) * 10;		
 			SceneManager.LoadScene ("Lose");
 		}
 
@@ -49,7 +68,8 @@ public class Cesar : MonoBehaviour {
 		}
 	}
 
-	public int getDirection(){ 
+	public int getDirection ()
+	{ 
 		int ans = 0;
 		Vector2 currentPosition = transform.position;
 		Vector2 vel = (currentPosition - prevLocation) / Time.deltaTime;
@@ -63,8 +83,12 @@ public class Cesar : MonoBehaviour {
 		return ans;
 	}
 
-	public void boost(float astrength){
-		transform.GetComponent<Rigidbody2D> ().velocity =  new Vector2(0f,astrength);
+	public void boost (float astrength = 1f)
+	{				
+		//Calculate the next velocity accordingly to maxSpeed
+		float  currentVelocity = rgbd.velocity.y;
+		currentVelocity = Mathf.Clamp(currentSpeed, minSpeed, maxSpeed);
+		rgbd.velocity =  new Vector2(0f,currentVelocity * astrength);
 	}
 		
 }
