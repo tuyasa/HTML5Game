@@ -19,6 +19,7 @@ public class LevelManager : MonoBehaviour {
 	public float cloudCreationMaxOffset = 0;
 	public float largeurCreationDistance = 0;
 	public float intervalleApparitionCloud;
+	public int nombreNuagesMax = 7;
 
 	/*Youtubeur*/
 	public Transform[] youtubeurs;
@@ -26,6 +27,7 @@ public class LevelManager : MonoBehaviour {
 	public float youtubeurCreationMaxOffset;
 	public float largeurCreationYoutubeur;
 	public float intervalleApparitionYoutubeur;
+	public int nombreYoutubeurMax = 5;
 
 	/*Dislike*/
 	public Transform dislike;
@@ -37,6 +39,9 @@ public class LevelManager : MonoBehaviour {
 	/*BG*/
 	public Transform background;
 
+	/*Animation*/
+	public float animationVelocityLimit = 0;
+
 	private float differenceBGCam;
 
 	// Use this for initialization
@@ -47,15 +52,18 @@ public class LevelManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Camera follow...
-		if (this.isProgressing()){
+		if (this.isProgressing ()) {
 			cameraFollowCesar ();
-		}
+		} 
 
 		/*Lose Collider Follow*/
 		loseColliderFollow ();
 
 		/* BG Follow */ 
 		backgroundFollow ();
+
+		/*Animate Up Down*/
+		animateUpDown ();
 	}
 
 	public void gameBegin(){
@@ -75,19 +83,23 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	void createClouds(){
-		float xOffSet = Random.Range (-1*largeurCreationDistance,largeurCreationDistance );
-		float yOffSet = Random.Range (0, cloudCreationMaxOffset);
-		Vector2 creationPosition = new Vector2 (cesar.transform.position.x + xOffSet, cesar.transform.position.y + cloudCreationDistance + yOffSet);
-		int cloudType = Random.Range (0, 4); 
-		Instantiate (nuages [cloudType], creationPosition, Quaternion.identity);
+		if (GameObject.FindGameObjectsWithTag ("Nuage").Length < nombreNuagesMax) {
+			float xOffSet = Random.Range (-1 * largeurCreationDistance, largeurCreationDistance);
+			float yOffSet = Random.Range (0, cloudCreationMaxOffset);
+			Vector2 creationPosition = new Vector2 (cesar.transform.position.x + xOffSet, cesar.transform.position.y + cloudCreationDistance + yOffSet);
+			int cloudType = Random.Range (0, 4); 
+			Instantiate (nuages [cloudType], creationPosition, Quaternion.identity);
+		}
 	}
 
 	void createYoutubeur(){
-		float xOffSet = Random.Range (-1*largeurCreationDislike,largeurCreationDislike );
-		float yOffSet = Random.Range (0, youtubeurCreationMaxOffset);
-		Vector2 creationPosition = new Vector2 (cesar.transform.position.x + xOffSet, cesar.transform.position.y + youtubeurCreationDistance + yOffSet);
-		int youtubeype = Random.Range (0, 3); 
-		Instantiate (youtubeurs [youtubeype], creationPosition, Quaternion.identity);
+		if (GameObject.FindGameObjectsWithTag ("Youtubeur").Length < nombreYoutubeurMax) {
+			float xOffSet = Random.Range (-1 * largeurCreationDislike, largeurCreationDislike);
+			float yOffSet = Random.Range (0, youtubeurCreationMaxOffset);
+			Vector2 creationPosition = new Vector2 (cesar.transform.position.x + xOffSet, cesar.transform.position.y + youtubeurCreationDistance + yOffSet);
+			int youtubeype = Random.Range (0, 3); 
+			Instantiate (youtubeurs [youtubeype], creationPosition, Quaternion.identity);
+		}
 	}
 
 	void createDislike(){
@@ -103,5 +115,15 @@ public class LevelManager : MonoBehaviour {
 
 	void backgroundFollow(){
 		background.transform.position = new Vector3 (background.position.x, lacamera.transform.position.y + differenceBGCam, background.position.z);
+	}
+
+	void animateUpDown(){
+		Vector2 velocity = cesar.GetComponent<Rigidbody2D> ().velocity;
+		if (velocity.y > animationVelocityLimit) {
+			cesar.animateBoost ();
+		}
+		else{
+			cesar.animateFall ();
+		}
 	}
 }
