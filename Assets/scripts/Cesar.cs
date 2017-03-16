@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class Cesar : MonoBehaviour
 {
 
-	public float strength = 10f;
+//	public float strength = 10f;
 	public Collider2D loseCollider;
 	//Horizontal speed;
 	public float moveSpeed = 6f;
@@ -46,7 +46,7 @@ public class Cesar : MonoBehaviour
 			levelManager.GetComponent<LevelManager> ().gameBegin ();
 			this.boost (1f);
 			this.animateJump ();
-			Debug.Log ("click");
+//			Debug.Log ("click");
 			started = true;
 		}
 		if (Input.GetKey ("q") && transform.position.x > maxLeft) {
@@ -66,7 +66,7 @@ public class Cesar : MonoBehaviour
 			SceneManager.LoadScene ("Lose");
 		}
 
-		if (collider.GetComponent<Youtubeur> () != null) {
+		if (collider.GetComponent<Youtubeur> () != null) {			
 			this.boost (collider.GetComponent<Youtubeur> ().boost);
 		}
 	}
