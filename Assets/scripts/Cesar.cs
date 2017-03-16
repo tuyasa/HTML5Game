@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class Cesar : MonoBehaviour
 {
 
-	public float strength = 20f;
+	public float strength = 10f;
 	public Collider2D loseCollider;
 	//Horizontal speed;
 	public float moveSpeed = 6f;
@@ -13,6 +13,7 @@ public class Cesar : MonoBehaviour
 	public float maxRight = 3.163f;
 	public GameObject levelManager;
 	static public int score = 0;
+	Animator animator;
 
 	private Vector2 prevLocation;
 
@@ -31,6 +32,7 @@ public class Cesar : MonoBehaviour
 		prevLocation = transform.position;
 		score = 0;
 		started = false;
+		animator = transform.GetChild (0).GetComponent<Animator>();
 	}
 
 	
@@ -43,6 +45,7 @@ public class Cesar : MonoBehaviour
 			score = 0;
 			levelManager.GetComponent<LevelManager> ().gameBegin ();
 			this.boost (1f);
+			this.animateJump ();
 			Debug.Log ("click");
 			started = true;
 		}
@@ -89,6 +92,19 @@ public class Cesar : MonoBehaviour
 		float  currentVelocity = rgbd.velocity.y;
 		currentVelocity = Mathf.Clamp(currentSpeed, minSpeed, maxSpeed);
 		rgbd.velocity =  new Vector2(0f,currentVelocity * astrength);
+		this.animateBoost ();
+	}
+
+	private void animateJump(){
+		this.animator.SetBool ("jump", true);
+	}
+
+	public void animateFall(){
+		this.animator.SetInteger("fall", 1);
+	}
+
+	public void animateBoost(){
+		this.animator.SetInteger("fall", -1);
 	}
 		
 }
