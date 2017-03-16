@@ -19,4 +19,7 @@ public class LoseManager : MonoBehaviour {
 	public void restart(){
 		SceneManager.LoadScene ("prototype");
 	}
+	public void Menu(){
+		SceneManager.LoadScene ("Menu");
+	}
 }

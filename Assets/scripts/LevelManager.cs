@@ -44,9 +44,11 @@ public class LevelManager : MonoBehaviour {
 
 	private float differenceBGCam;
 
+	public GameObject spaceLaunch;
 	// Use this for initialization
 	void Start () {
 		differenceBGCam = lacamera.transform.position.y - background.position.y;
+
 	}
 	
 	// Update is called once per frame
@@ -67,6 +69,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void gameBegin(){
+		spaceLaunch.SetActive(false);
 		InvokeRepeating ("createClouds", 2f, intervalleApparitionCloud);
 		InvokeRepeating ("createYoutubeur", 1f, intervalleApparitionYoutubeur);
 		InvokeRepeating ("createDislike", 2f, intervalleApparitionDislike);
